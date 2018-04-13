@@ -1,0 +1,2 @@
+)lisp (load "setup")
+)lisp (ql:quickload :webSPAD)

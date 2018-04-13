@@ -1,0 +1,6 @@
+﻿++ web SPAD
+
+
+
+	* WikiSettings
+	* PrimaryInstall

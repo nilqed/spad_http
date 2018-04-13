@@ -1,0 +1,123 @@
+﻿++ Primary Install
+
+Clone an updated QuickLisp folder and remove all installed software (even local projects).
+Foldername: spad_http:
+ 
+ * Start SBCL: --no-sysinit --no-userinit if necessary
+ * ql:uqickload :hunchentoot
+ * quit
+ * check if installed: spad_http/dists/quicklisp/software
+ * goto spad_http/local_projects
+ * git clone https://github.com/nilqed/webSPAD.git
+ * create the file "start.input"
+ * start fricas
+ * )read start
+ * open http://localhost:4242/eval?code=D(x^n,x,6) in browser
+ * check output
+ 
+ 
+ 
+<<pre
+kfp@nilqed:~/Desktop$ sbcl
+This is SBCL 1.4.6, an implementation of ANSI Common Lisp.
+More information about SBCL is available at <http://www.sbcl.org/>.
+
+SBCL is free software, provided as is, with absolutely no warranty.
+It is mostly in the public domain; some portions are provided under
+BSD-style licenses.  See the CREDITS and COPYING files in the
+distribution for more information.
+* (load "spad_http/setup")
+WARNING: redefining QL-SETUP:QMERGE in DEFUN
+WARNING: redefining QL-SETUP:QENOUGH in DEFUN
+WARNING: redefining QL-SETUP::IMPLEMENTATION-SIGNATURE in DEFUN
+WARNING: redefining QL-SETUP::DUMB-STRING-HASH in DEFUN
+WARNING: redefining QL-SETUP::ASDF-FASL-PATHNAME in DEFUN
+WARNING: redefining QL-SETUP::ENSURE-ASDF-LOADED in DEFUN
+
+T
+(ql::system-apropos :hunchentoot)
+#<SYSTEM clack-handler-hunchentoot / clack-20180328-git / quicklisp 2018-03-28>
+#<SYSTEM hunchentoot / hunchentoot-v1.2.38 / quicklisp 2018-03-28>
+#<SYSTEM hunchentoot-auth / hunchentoot-auth-20140113-git / quicklisp 2018-03-28>
+#<SYSTEM hunchentoot-cgi / hunchentoot-cgi-20140211-git / quicklisp 2018-03-28>
+#<SYSTEM hunchentoot-dev / hunchentoot-v1.2.38 / quicklisp 2018-03-28>
+#<SYSTEM hunchentoot-single-signon / hunchentoot-single-signon-20131111-git / quicklisp 2018-03-28>
+#<SYSTEM hunchentoot-test / hunchentoot-v1.2.38 / quicklisp 2018-03-28>
+#<SYSTEM prometheus.exposers.hunchentoot / prometheus.cl-20160825-git / quicklisp 2018-03-28>
+#<SYSTEM prometheus.exposers.hunchentoot.test / prometheus.cl-20160825-git / quicklisp 2018-03-28>
+#<SYSTEM t-clack-handler-hunchentoot / clack-20180328-git / quicklisp 2018-03-28>
+
+* (ql:quickload :hunchentoot)
+To load "hunchentoot":
+  Load 10 ASDF systems:
+    alexandria asdf bordeaux-threads cffi cl-base64
+    cl-ppcre trivial-backtrace trivial-features
+    trivial-garbage uiop
+  Install 10 Quicklisp releases:
+    chunga cl+ssl cl-fad flexi-streams hunchentoot md5
+    rfc2388 split-sequence trivial-gray-streams usocket
+; Fetching #<URL "http://beta.quicklisp.org/archive/split-sequence/2018-02-28/split-sequence-v1.4.1.tgz">
+; 3.82KB
+==================================================
+3,915 bytes in 0.00 seconds (3823.24KB/sec)
+; Fetching #<URL "http://beta.quicklisp.org/archive/usocket/2016-10-31/usocket-0.7.0.1.tgz">
+; 72.23KB
+==================================================
+73,964 bytes in 0.02 seconds (4514.40KB/sec)
+; Fetching #<URL "http://beta.quicklisp.org/archive/rfc2388/2013-07-20/rfc2388-20130720-git.tgz">
+; 12.20KB
+==================================================
+12,494 bytes in 0.00 seconds (0.00KB/sec)
+; Fetching #<URL "http://beta.quicklisp.org/archive/md5/2018-02-28/md5-20180228-git.tgz">
+; 15.48KB
+==================================================
+15,847 bytes in 0.00 seconds (0.00KB/sec)
+; Fetching #<URL "http://beta.quicklisp.org/archive/cl-fad/2017-12-27/cl-fad-20171227-git.tgz">
+; 24.03KB
+==================================================
+24,610 bytes in 0.00 seconds (12016.60KB/sec)
+; Fetching #<URL "http://beta.quicklisp.org/archive/flexi-streams/2018-03-28/flexi-streams-20180328-git.tgz">
+; 129.52KB
+==================================================
+132,631 bytes in 0.03 seconds (4797.13KB/sec)
+; Fetching #<URL "http://beta.quicklisp.org/archive/cl+ssl/2018-03-28/cl+ssl-20180328-git.tgz">
+; 45.20KB
+==================================================
+46,289 bytes in 0.01 seconds (3477.24KB/sec)
+; Fetching #<URL "http://beta.quicklisp.org/archive/trivial-gray-streams/2018-03-28/trivial-gray-streams-20180328-git.tgz">
+; 7.83KB
+==================================================
+8,016 bytes in 0.00 seconds (7828.13KB/sec)
+; Fetching #<URL "http://beta.quicklisp.org/archive/chunga/2018-01-31/chunga-20180131-git.tgz">
+; 20.07KB
+==================================================
+20,552 bytes in 0.00 seconds (20070.31KB/sec)
+; Fetching #<URL "http://beta.quicklisp.org/archive/hunchentoot/2017-12-27/hunchentoot-v1.2.38.tgz">
+; 213.57KB
+==================================================
+218,697 bytes in 0.04 seconds (5772.20KB/sec)
+; Loading "hunchentoot"
+[package impl-specific-gray]......................
+[package trivial-gray-streams]....................
+[package chunga]..................................
+[package cl-fad]..................................
+[package path]....................................
+[package cl-ppcre]................................
+..................................................
+[package flexi-streams]...........................
+..................................................
+..................................................
+..................................................
+[package trivial-garbage].........................
+[package cl+ssl]..................................
+[package md5].....................................
+[package rfc2388].................................
+[package trivial-backtrace].......................
+[package split-sequence]..........................
+[package usocket].................................
+[package url-rewrite].............................
+[package hunchentoot]............................
+(:HUNCHENTOOT)
+*     
+
+>>

@@ -1,0 +1,17 @@
+===================================
+spad_http : Jupyter kernel for SPAD 
+===================================
+
+This is the alpha version of a new Jupyter kernel for FriCAS, Axiom ... where "alpha" refers to available features, not to stability. 
+
+
+How it works
+------------
+
+The directory "spad_http" contains, besides a local "quicklisp" distribution, Hunchentoot - The Common Lisp web server formerly known as TBNL (see http://edicl.github.io/hunchentoot/). The subdirectory "spadserver" contains a Python wrapper kernel (see http://jupyter-client.readthedocs.io/en/stable/wrapperkernels.html) which starts an instance of FriCAS and loading the webserver by "start.input" at the same time. The HTTP server is listening on port 4242 (may be changed, of course) for GET/PUT requests by the kernel. Data interchange goes via JSON, similar to ZMQ.  
+
+
+kfp@nilqed:~/Desktop/spad_http$ jupyter kernelspec install /home/kfp/Desktop/spad_http/spadkernel/ --user
+[InstallKernelSpec] Removing existing kernelspec in /home/kfp/.local/share/jupyter/kernels/spadkernel
+[InstallKernelSpec] Installed kernelspec spadkernel in /home/kfp/.local/share/jupyter/kernels/spadkernel
+
