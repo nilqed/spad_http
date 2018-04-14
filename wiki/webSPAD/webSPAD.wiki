@@ -37,7 +37,7 @@ tabhistory_maxentries = 25
 template_pagenamesre = ^template/
 further_wiki_words = 
 wiki_name = webSPAD
-last_wiki_word = webSPAD
+last_wiki_word = PrimaryInstall
 tree_last_root_wiki_word = webSPAD
 
 [wiki_db]

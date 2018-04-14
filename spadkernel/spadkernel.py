@@ -5,8 +5,13 @@
 # http://jupyter-client.readthedocs.io/en/stable/wrapperkernels.html
 
 from ipykernel.kernelbase import Kernel
+from subprocess import Popen
 import requests
 import json
+import os
+
+path = os.path.abspath(__file__)
+dir_path = os.path.dirname(path)
 
 class httpSPAD():
 
@@ -14,6 +19,8 @@ class httpSPAD():
         # Store parameters
         self.url = url
         self.output = None
+        # Start FriCAS/Axiom
+        
         
     def put(self, code):
         payload = {'code': code}

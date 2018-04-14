@@ -4,3 +4,4 @@
 
 	* WikiSettings
 	* PrimaryInstall
+	* PythonSubProcess
