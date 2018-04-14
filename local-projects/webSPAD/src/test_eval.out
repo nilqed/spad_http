@@ -1,0 +1,182 @@
+
+)lisp (load "eval")
+ 
+Value = T
+
+)set output tex on
+ 
+)set output html on
+ 
+)set output mathml on
+ 
+)set output script on
+ 
+)set output fortran on
+ 
+)set output texmacs on
+ 
+
+--=========================================================================
+)lisp (defvar +tmp+ (webspad::webspad-eval "D(x^n,x,2)"))
+ 
+Value = +TMP+
+--=========================================================================
+--
+---------------------------------------------------------------------------
+)lisp (format t "ALGEBRA...~%~A" (webspad::webspad-data-algebra +tmp+))
+ 
+ALGEBRA...
+     2      n - 2
+   (n  - n)x
+Value = NIL
+---------------------------------------------------------------------------
+)lisp (format t "TYPE......~%~A" (webspad::webspad-data-spad-type +tmp+))
+ 
+TYPE......
+Expression(Integer)
+Value = NIL
+---------------------------------------------------------------------------
+)lisp (format t "LATEX.....~%~A" (webspad::webspad-data-tex +tmp+))
+ 
+LATEX.....
+$$
+{\left( {{n} \sp {2}} -n 
+\right)}
+\  {{x} \sp {{n -2}}} 
+\leqno(NIL)
+$$
+
+Value = NIL
+---------------------------------------------------------------------------
+)lisp (format t "HTML......~%~A" (webspad::webspad-data-html +tmp+))
+ 
+HTML......
+(
+n
+<sup>
+2
+</sup>
+-n
+)
+*
+x
+<sup>
+(
+n
+-2
+)
+</sup>
+ 
+
+Value = NIL
+---------------------------------------------------------------------------
+)lisp (format t "MATHML....~%~A" (webspad::webspad-data-mathml +tmp+))
+ 
+MATHML....
+<math xmlns="http://www.w3.org/1998/Math/MathML" mathsize="big" display="block">
+<mrow><mrow><mo>(</mo><mrow><msup><mrow><mi>n</mi></mrow><mrow><mn>2</mn></mrow></msup></mrow><mo>-</mo><mi>n</mi><mo>)</mo></mrow><mo>&#x02062;</mo><mrow><msup><mrow><mi>x</mi></mrow><mrow><mrow><mo>(</mo><mi>n</mi><mo>-</mo><mn>2</mn><mo>)</mo></mrow></mrow></msup></mrow></mrow>
+</math>
+
+Value = NIL
+---------------------------------------------------------------------------
+)lisp (format t "SCRIPT....~%~A" (webspad::webspad-data-formula +tmp+))
+ 
+SCRIPT....
+.eq set blank @
+:df.
+<<left lparen <n sup 2> -n right rparen> @@ <x sup <left lparen n -2 right 
+rparen>>> 
+:edf.
+Value = NIL
+---------------------------------------------------------------------------
+)lisp (format t "FORTRAN...~%~A" (webspad::webspad-data-fortran +tmp+))
+ 
+FORTRAN...
+      RNIL=(n*n-n)*x**(n-2)
+Value = NIL
+---------------------------------------------------------------------------
+)lisp (format t "TEXMACS...~%~A" (webspad::webspad-data-texmacs +tmp+))
+ 
+TEXMACS...
+scheme: (with "mode" "math"
+(concat (concat  "(" (concat (concat (concat  "n" )(rsup  "2" ))) (concat "-" (concat  "n" )) ")" ) "*" (concat (concat (concat  "x" )(rsup (concat  "(" (concat  "n" ) (concat "-"  "2" ) ")" )))))
+)
+
+Value = NIL
+---------------------------------------------------------------------------
+--
+--
+----------------------
+-- RAW +TMP+ STRUCTURE
+----------------------
+
+)lisp +TMP+
+ 
+Value = #S(WEBSPAD::WEBSPAD-DATA
+           :INPUT "D(x^n,x,2)"
+           :MULTILINE? NIL
+           :SPAD-TYPE "Expression(Integer)"
+           :ALGEBRA "     2      n - 2
+   (n  - n)x
+"
+           :CHARYBDIS "     2      n - 2
+   (n  - n)x
+                                                    Type: Expression(Integer)
+"
+           :TEX "$$
+{\\left( {{n} \\sp {2}} -n 
+\\right)}
+\\  {{x} \\sp {{n -2}}} 
+\\leqno(NIL)
+$$
+
+"
+           :HTML "(
+n
+<sup>
+2
+</sup>
+-n
+)
+*
+x
+<sup>
+(
+n
+-2
+)
+</sup>
+ 
+
+"
+           :MATHML "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" mathsize=\"big\" display=\"block\">
+<mrow><mrow><mo>(</mo><mrow><msup><mrow><mi>n</mi></mrow><mrow><mn>2</mn></mrow></msup></mrow><mo>-</mo><mi>n</mi><mo>)</mo></mrow><mo>&#x02062;</mo><mrow><msup><mrow><mi>x</mi></mrow><mrow><mrow><mo>(</mo><mi>n</mi><mo>-</mo><mn>2</mn><mo>)</mo></mrow></mrow></msup></mrow></mrow>
+</math>
+
+"
+           :FORMULA ".eq set blank @
+:df.
+<<left lparen <n sup 2> -n right rparen> @@ <x sup <left lparen n -2 right 
+rparen>>> 
+:edf.
+"
+           :FORTRAN "      RNIL=(n*n-n)*x**(n-2)
+"
+           :TEXMACS "scheme: (with \"mode\" \"math\"
+(concat (concat  \"(\" (concat (concat (concat  \"n\" )(rsup  \"2\" ))) (concat \"-\" (concat  \"n\" )) \")\" ) \"*\" (concat (concat (concat  \"x\" )(rsup (concat  \"(\" (concat  \"n\" ) (concat \"-\"  \"2\" ) \")\" )))))
+)
+
+"
+           :OPENMATH ""
+           :FORMAT-FLAGS #S(WEBSPAD::WS-FORMAT
+                            :ALGEBRA T
+                            :TEX T
+                            :HTML T
+                            :MATHML T
+                            :FORMULA T
+                            :FORTRAN T
+                            :TEXMACS T
+                            :OPENMATH NIL))
+
+)spool
+ 

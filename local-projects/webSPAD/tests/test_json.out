@@ -1,0 +1,13 @@
+{ "input":"D(x^n,x,4)","multiline?":"false","spad-type":"Expression(Integer)","algebra":"     4     3      2       n - 4
+   (n  - 6n  + 11n  - 6n)x
+","charybdis":"     4     3      2       n - 4
+   (n  - 6n  + 11n  - 6n)x
+                                                    Type: Expression(Integer)
+","tex":"","html":"","mathml":"","formula":"","fortran":"","texmacs":"","openmath":"","format-flags": {"algebra":"true","tex":"false","html":"false","mathml":"false","formula":"false","fortran":"false","texmcas":"false","openmath":"false"}}
+
+D(x^n,x,4)
+     4     3      2       n - 4
+   (n  - 6n  + 11n  - 6n)x
+                                                    Type: Expression(Integer)
+
+Expression(Integer)

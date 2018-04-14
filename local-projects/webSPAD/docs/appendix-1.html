@@ -1,0 +1,297 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Minimal embedding of Hunchentoot &mdash; webSPAD 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="webSPAD 0.1.1 documentation" href="index.html" />
+    <link rel="prev" title="1. Introduction" href="section-1.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="section-1.html" title="1. Introduction"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">webSPAD 0.1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="minimal-embedding-of-hunchentoot">
+<h1>Minimal embedding of Hunchentoot<a class="headerlink" href="#minimal-embedding-of-hunchentoot" title="Permalink to this headline">¶</a></h1>
+<p>The following code provides a concise example how to embed <em>Hunchentoot</em>
+into a running <em>FriCAS</em> instance. The <code class="docutils literal"><span class="pre">GET</span></code> and <code class="docutils literal"><span class="pre">POST</span></code> method will be
+demonstrated by using urls in a web-browser and a short <em>Python</em> code
+respectively.</p>
+<div class="section" id="the-code">
+<h2>The code<a class="headerlink" href="#the-code" title="Permalink to this headline">¶</a></h2>
+<p>Paste the following code into a file <code class="docutils literal"><span class="pre">minserver.lisp</span></code></p>
+<div class="code highlight-default"><div class="highlight"><pre><span></span>(load &quot;~/quicklisp/setup&quot;)
+(ql:quickload :hunchentoot)
+
+
+(in-package :boot)
+
+;;; Config
+(defparameter +port+ 4242)
+
+;;; SPAD eval
+
+(defun spad_eval (code)
+  (let ((*package* (find-package :boot))
+        (alg (boot::|parseAndEvalToString| code)))
+          (format nil &quot;~{~A~%~}&quot; alg)))
+
+;;; WEB server
+(hunchentoot:define-easy-handler (fricas-eval :uri &quot;/eval&quot;) (code)
+  (setf (hunchentoot:content-type*) &quot;text/plain&quot;)
+    (format nil &quot;~A~%&quot; (spad_eval code)))
+
+(hunchentoot:start (make-instance &#39;hunchentoot:easy-acceptor :port +port+))
+
+;;; add :address &quot;localhost&quot;  if you wish local access only!
+;;; test example: http://localhost:4242/eval?code=D(x^n,x,6)
+</pre></div>
+</div>
+</div>
+<div class="section" id="load-server">
+<h2>Load server<a class="headerlink" href="#load-server" title="Permalink to this headline">¶</a></h2>
+<p>We will do all steps manually for the sake of clarity. Start <em>FriCAS</em> and
+load the file <code class="docutils literal"><span class="pre">minserver.lisp</span></code>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ fricas
+
+                           FriCAS Computer Algebra System
+                         Version: FriCAS 2016-08-28
+                  Timestamp: Sam Sep 17 00:34:49 CEST 2016
+---------------------------------------------------------------------------
+   Issue )copyright to view copyright notices.
+   Issue )summary for a summary of useful system commands.
+   Issue )quit to leave FriCAS and return to shell.
+---------------------------------------------------------------------------
+
+(1) -&gt; )lisp (load &quot;minserver&quot;)
+To load &quot;hunchentoot&quot;:
+  Load 1 ASDF system:
+    hunchentoot
+; Loading &quot;hunchentoot&quot;
+............
+Value = T
+(1) -&gt;
+</pre></div>
+</div>
+</div>
+<div class="section" id="open-a-web-browser">
+<h2>Open a web browser<a class="headerlink" href="#open-a-web-browser" title="Permalink to this headline">¶</a></h2>
+<p>Now open a web browser (some terminal based browsers like <em>w3m</em>, <em>lynx</em> or
+<em>links</em>, do not accept all urls as e.g. Firefox does, however, when using
+quotes most urls will work). Enter the following url:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>http://localhost:4242/eval?code=D(x^n,x,6)
+</pre></div>
+</div>
+<p>The result in the browser window should exactly look like as below:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>  <span class="mi">6</span>      <span class="mi">5</span>      <span class="mi">4</span>       <span class="mi">3</span>       <span class="mi">2</span>         <span class="n">n</span> <span class="o">-</span> <span class="mi">6</span>
+<span class="p">(</span><span class="n">n</span>  <span class="o">-</span> <span class="mi">15</span><span class="n">n</span>  <span class="o">+</span> <span class="mi">85</span><span class="n">n</span>  <span class="o">-</span> <span class="mi">225</span><span class="n">n</span>  <span class="o">+</span> <span class="mi">274</span><span class="n">n</span>  <span class="o">-</span> <span class="mi">120</span><span class="n">n</span><span class="p">)</span><span class="n">x</span>
+                                                 <span class="n">Type</span><span class="p">:</span> <span class="n">Expression</span><span class="p">(</span><span class="n">Integer</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="explanation">
+<h2>Explanation<a class="headerlink" href="#explanation" title="Permalink to this headline">¶</a></h2>
+<p>The connection of the url example above with the lisp code is almost obvious:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">fricas</span><span class="o">-</span><span class="nb">eval</span> <span class="p">:</span><span class="n">uri</span> <span class="s2">&quot;/eval&quot;</span><span class="p">)</span> <span class="p">(</span><span class="n">code</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The easy handler <em>expects</em> a query <code class="docutils literal"><span class="pre">?</span></code> and one variable <code class="docutils literal"><span class="pre">code</span></code>. Then this
+query will be evaluated and the result formatted and written to the client.</p>
+</div>
+<div class="section" id="get-and-post">
+<h2>GET and POST<a class="headerlink" href="#get-and-post" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Source:</th><td class="field-body"><a class="reference external" href="http://www.w3schools.com/TAGS/ref_httpmethods.asp">http://www.w3schools.com/TAGS/ref_httpmethods.asp</a></td>
+</tr>
+</tbody>
+</table>
+<p>Two commonly used methods for a request-response between a client and server
+are:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">GET</span> <span class="ow">and</span> <span class="n">POST</span><span class="o">.</span>
+
+<span class="n">GET</span> <span class="o">-</span> <span class="n">Requests</span> <span class="n">data</span> <span class="kn">from</span> <span class="nn">a</span> <span class="n">specified</span> <span class="n">resource</span>
+<span class="n">POST</span> <span class="o">-</span> <span class="n">Submits</span> <span class="n">data</span> <span class="n">to</span> <span class="n">be</span> <span class="n">processed</span> <span class="n">to</span> <span class="n">a</span> <span class="n">specified</span> <span class="n">resource</span>
+</pre></div>
+</div>
+<div class="section" id="the-get-method">
+<h3>The GET Method<a class="headerlink" href="#the-get-method" title="Permalink to this headline">¶</a></h3>
+<p>Note that the query string (name/value pairs) is sent in the URL of a GET
+request:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>/test/demo_form.asp?name1=value1&amp;name2=value2
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Restrictions:</th><td class="field-body">The GET method adds the data to the URL; and the length of a</td>
+</tr>
+</tbody>
+</table>
+<p>URL is limited (maximum URL length is <strong>2048</strong> characters and <code class="docutils literal"><span class="pre">ASCII</span></code>
+characters only are allowed.</p>
+<p>Certain character have a special meaning in an URL, so url encoding must
+follow some <a class="reference external" href="http://www.w3schools.com/tags/ref_urlencode.asp">rules</a> (HTML URL Encoding Reference).</p>
+</div>
+<div class="section" id="the-post-method">
+<h3>The POST Method<a class="headerlink" href="#the-post-method" title="Permalink to this headline">¶</a></h3>
+<p><strong>Note</strong> that the query string (name/value pairs) is sent in the HTTP message
+body of a POST request:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">POST</span> <span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">demo_form</span><span class="o">.</span><span class="n">asp</span> <span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span>
+<span class="n">Host</span><span class="p">:</span> <span class="n">w3schools</span><span class="o">.</span><span class="n">com</span>
+<span class="n">name1</span><span class="o">=</span><span class="n">value1</span><span class="o">&amp;</span><span class="n">name2</span><span class="o">=</span><span class="n">value2</span>
+</pre></div>
+</div>
+<p>The restrictions of the GET method do not apply here, however, to get a full
+overview consult the link above. There also are other HTTP request
+possibilities.</p>
+</div>
+</div>
+<div class="section" id="python-example-for-post">
+<h2>Python example for POST<a class="headerlink" href="#python-example-for-post" title="Permalink to this headline">¶</a></h2>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://localhost:4242/eval&#39;</span>
+<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="s1">&#39;D(x^n,x,8)&#39;</span><span class="p">}</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Live action:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">C</span><span class="p">:</span>\<span class="n">Users</span>\<span class="n">nilqed</span><span class="o">&gt;</span><span class="n">python</span>
+<span class="n">Python</span> <span class="mf">2.7</span><span class="o">.</span><span class="mi">10</span> <span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">May</span> <span class="mi">23</span> <span class="mi">2015</span><span class="p">,</span> <span class="mi">09</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">32</span><span class="p">)</span> <span class="p">[</span><span class="n">MSC</span> <span class="n">v</span><span class="o">.</span><span class="mi">1500</span> <span class="mi">32</span> <span class="n">bit</span> <span class="p">(</span><span class="n">Intel</span><span class="p">)]</span>
+<span class="n">Type</span> <span class="s2">&quot;help&quot;</span><span class="p">,</span> <span class="s2">&quot;copyright&quot;</span><span class="p">,</span> <span class="s2">&quot;credits&quot;</span> <span class="ow">or</span> <span class="s2">&quot;license&quot;</span> <span class="k">for</span> <span class="n">more</span> <span class="n">information</span><span class="o">.</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">requests</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://localhost:4242/eval&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="s1">&#39;D(x^n,x,8)&#39;</span><span class="p">}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span>
+<span class="o">&lt;</span><span class="n">Response</span> <span class="p">[</span><span class="mi">200</span><span class="p">]</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+     <span class="mi">8</span>      <span class="mi">7</span>       <span class="mi">6</span>        <span class="mi">5</span>        <span class="mi">4</span>         <span class="mi">3</span>         <span class="mi">2</span>          <span class="n">n</span> <span class="o">-</span> <span class="mi">8</span>
+   <span class="p">(</span><span class="n">n</span>  <span class="o">-</span> <span class="mi">28</span><span class="n">n</span>  <span class="o">+</span> <span class="mi">322</span><span class="n">n</span>  <span class="o">-</span> <span class="mi">1960</span><span class="n">n</span>  <span class="o">+</span> <span class="mi">6769</span><span class="n">n</span>  <span class="o">-</span> <span class="mi">13132</span><span class="n">n</span>  <span class="o">+</span> <span class="mi">13068</span><span class="n">n</span>  <span class="o">-</span> <span class="mi">5040</span><span class="n">n</span><span class="p">)</span><span class="n">x</span>
+
+                                                  <span class="n">Type</span><span class="p">:</span> <span class="n">Expression</span><span class="p">(</span><span class="n">Integer</span><span class="p">)</span>
+
+
+<span class="o">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>With the POST method we can use high <em>payloads</em> and there are many languages
+with HTTP support libraries.</p>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
+<p>This skeleton example shows the general method and of course only uses the
+most basic features of <em>Hunchentoot</em>. We can define many more easy handlers
+and other - even more sophisticated - methods to access the internals of
+<em>FriCAS</em> by HTTP requests. The sky is the limit ;-)</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Minimal embedding of Hunchentoot</a><ul>
+<li><a class="reference internal" href="#the-code">The code</a></li>
+<li><a class="reference internal" href="#load-server">Load server</a></li>
+<li><a class="reference internal" href="#open-a-web-browser">Open a web browser</a></li>
+<li><a class="reference internal" href="#explanation">Explanation</a></li>
+<li><a class="reference internal" href="#get-and-post">GET and POST</a><ul>
+<li><a class="reference internal" href="#the-get-method">The GET Method</a></li>
+<li><a class="reference internal" href="#the-post-method">The POST Method</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#python-example-for-post">Python example for POST</a></li>
+<li><a class="reference internal" href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="section-1.html"
+                        title="previous chapter">1. Introduction</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/appendix-1.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="section-1.html" title="1. Introduction"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">webSPAD 0.1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Kurt Pagani &lt;nilqed@gmail.com&gt;.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,41 @@
+)spool test_eval.out
+)lisp (load "eval")
+
+)set output tex on
+)set output html on
+)set output mathml on
+)set output script on
+)set output fortran on
+)set output texmacs on
+
+--=========================================================================
+)lisp (defvar +tmp+ (webspad::webspad-eval "D(x^n,x,2)"))
+--=========================================================================
+--
+---------------------------------------------------------------------------
+)lisp (format t "ALGEBRA...~%~A" (webspad::webspad-data-algebra +tmp+))
+---------------------------------------------------------------------------
+)lisp (format t "TYPE......~%~A" (webspad::webspad-data-spad-type +tmp+))
+---------------------------------------------------------------------------
+)lisp (format t "LATEX.....~%~A" (webspad::webspad-data-tex +tmp+))
+---------------------------------------------------------------------------
+)lisp (format t "HTML......~%~A" (webspad::webspad-data-html +tmp+))
+---------------------------------------------------------------------------
+)lisp (format t "MATHML....~%~A" (webspad::webspad-data-mathml +tmp+))
+---------------------------------------------------------------------------
+)lisp (format t "SCRIPT....~%~A" (webspad::webspad-data-formula +tmp+))
+---------------------------------------------------------------------------
+)lisp (format t "FORTRAN...~%~A" (webspad::webspad-data-fortran +tmp+))
+---------------------------------------------------------------------------
+)lisp (format t "TEXMACS...~%~A" (webspad::webspad-data-texmacs +tmp+))
+---------------------------------------------------------------------------
+--
+--
+----------------------
+-- RAW +TMP+ STRUCTURE
+----------------------
+
+)lisp +TMP+
+
+)spool
+)quit

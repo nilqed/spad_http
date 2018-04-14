@@ -1,0 +1,138 @@
+------------
+Installation
+------------
+Open FriCAS.
+
+kfp@1093:/tmp$ fricas
+viewman not present, disabling graphics
+/bin/sh: 1: exec: /usr/local/lib/fricas/target/x86_64-unknown-linux/bin/hypertex: not found
+Checking for foreign routines
+AXIOM="/usr/local/lib/fricas/target/x86_64-unknown-linux"
+spad-lib="/usr/local/lib/fricas/target/x86_64-unknown-linux/lib/libspad.so"
+foreign routines found
+openServer result 0
+                       FriCAS Computer Algebra System
+                            Version: FriCAS 1.3.0
+                  Timestamp: Sun Oct  9 03:35:04 CEST 2016
+-----------------------------------------------------------------------------
+   Issue )copyright to view copyright notices.
+   Issue )summary for a summary of useful system commands.
+   Issue )quit to leave FriCAS and return to shell.
+-----------------------------------------------------------------------------
+
+
+(1) -> )lisp (load "~/quicklisp/setup")
+Value = T
+(1) -> )lisp (ql:quickload :webspad)
+To load "webspad":
+  Load 1 ASDF system:
+    webspad
+; Loading "webspad"
+....................
+Value = (:WEBSPAD)
+(1) -> 
+
+----
+Test
+----
+
+Now test in a browser: http://hostname.dom:4242/raw?code=D(x^n,x,6)
+
+#S(WEBSPAD::WEBSPAD-DATA
+   :INPUT D(x^n,x,6)
+   :MULTILINE? NIL
+   :SPAD-TYPE Expression(Integer)
+   :ALGEBRA      6      5      4       3       2         n - 6
+   (n  - 15n  + 85n  - 225n  + 274n  - 120n)x
+
+   :CHARYBDIS      6      5      4       3       2         n - 6
+   (n  - 15n  + 85n  - 225n  + 274n  - 120n)x
+                                                    Type: Expression(Integer)
+
+   :TEX #1=
+   :HTML #1#
+   :MATHML #1#
+   :FORMULA #1#
+   :FORTRAN #1#
+   :TEXMACS #1#
+   :OPENMATH #1#
+   :FORMAT-FLAGS #S(WEBSPAD::WS-FORMAT
+                    :ALGEBRA T
+                    :TEX NIL
+                    :HTML NIL
+                    :MATHML NIL
+                    :FORMULA NIL
+                    :FORTRAN NIL
+                    :TEXMACS NIL
+                    :OPENMATH NIL))
+---
+while output on console:
+
+(1) -> 85.0.182.232 - [2016-10-16 03:50:35] "GET /raw?code=D(x^n,x,6) HTTP/1.1"
+ 200 800 "-" "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:49.0) Gecko/20100101 
+ Firefox/49.0
+ 
+Try:
+
+(1) -> x:=1234567890
+
+   (1)  1234567890
+                                                        Type: PositiveInteger
+---
+The in browser: http://hostname.dom:4242/raw?code=x
+
+#S(WEBSPAD::WEBSPAD-DATA
+   :INPUT x
+   :MULTILINE? NIL
+   :SPAD-TYPE PositiveInteger
+   :ALGEBRA    1234567890
+
+   :CHARYBDIS    1234567890
+                                                        Type: PositiveInteger
+
+   :TEX #1=
+   :HTML #1#
+   :MATHML #1#
+   :FORMULA #1#
+   :FORTRAN #1#
+   :TEXMACS #1#
+   :OPENMATH #1#
+   :FORMAT-FLAGS #S(WEBSPAD::WS-FORMAT
+                    :ALGEBRA T
+                    :TEX NIL
+                    :HTML NIL
+                    :MATHML NIL
+                    :FORMULA NIL
+                    :FORTRAN NIL
+                    :TEXMACS NIL
+                    :OPENMATH NIL))
+  
+---                    
+The other way: http://hostname.dom:4242/raw?code=x:=12345/67890
+---
+(2) -> 85.0.182.232 - [2016-10-16 03:53:54] "GET /raw?code=x HTTP/1.1" 200 
+621 "-" "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:49.0) Gecko/20100101 
+Firefox/49.0"
+85.0.182.232 - [2016-10-16 03:54:34] "GET /raw?code=x=12345/67890 HTTP/1.1" 200
+743 "-" "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:49.0) Gecko/20100101 
+Firefox/49.0"
+
+(2) -> x
+
+         823
+   (2)  ----
+        4526
+                                                      Type: Fraction(Integer)
+
+------------
+Now use eval: http://hostname.dom:4242/eval?code=integrate(exp(-x^2),x)
+
+You should see the following in your browser ...
+
+          +---+
+   erf(x)\|%pi
+   ------------
+         2
+                                         Type: Union(Expression(Integer),...)
+
+                                         
