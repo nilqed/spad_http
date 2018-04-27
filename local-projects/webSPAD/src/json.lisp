@@ -4,7 +4,7 @@
 (defun bool-to-str (s) (if s "true" "false"))
 
 (defun encode-json (data)
-  (defvar flags (webspad-data-format-flags data))
+  (setf flags (webspad-data-format-flags data))
   (format nil "{ \"input\":\"~A\",~
                  \"multiline?\":\"~A\",~
                  \"spad-type\":\"~A\",~

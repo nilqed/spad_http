@@ -42,11 +42,10 @@
 
 (defun webspad-eval (s)
     
-    (setf fmt (make-ws-format)) ;;; ?
+    (setf fmt (make-ws-format)) 
     (setf out (make-ws-out-stream))
     
-    (setf data (make-webspad-data :format-flags fmt)) ;;; ?
-    (setf data (make-webspad-data :input s))
+    (setf data (make-webspad-data :input s :format-flags fmt))
     
     
     (if (ws-format-tex fmt) 
