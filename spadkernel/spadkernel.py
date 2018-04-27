@@ -5,7 +5,8 @@
 # http://jupyter-client.readthedocs.io/en/stable/wrapperkernels.html
 
 from ipykernel.kernelbase import Kernel
-from subprocess import Popen
+#from subprocess import Popen
+import spadkernel.spadtex
 import requests
 import json
 import os
@@ -15,13 +16,14 @@ dir_path = os.path.dirname(path)
 
 __version__ = '0.1.0'
 
+
+
 class httpSPAD():
 
     def __init__(self, url = 'http://localhost:4242/json'):
         # Store parameters
         self.url = url
         self.output = None
-        # Start FriCAS/Axiom
         
         
     def put(self, code):
@@ -68,7 +70,10 @@ class SPAD(Kernel):
         if r.ok:
             ff = self.server.output['format-flags']
             if ff['tex']=='true':
-                data['text/latex'] = self.server.output['tex']
+                tex = self.server.output['tex']
+                typ = self.server.output['spad-type']
+                #data['text/latex'] = spadkernel.spadtex.makeTeX(tex)
+                data['text/latex'] = spadkernel.spadtex.makeTeXType(tex,typ)
             if ff['html']=='true':
                 data['text/html'] = self.server.output['html']
             if ff['mathml']=='true':
