@@ -31,7 +31,7 @@ class httpSPAD():
         payload = {'code': code}
         r = requests.post(self.url, data=payload)
         data = r.text
-        data = data.replace('\\','\\\\')
+        #data = data.replace('\\','\\\\')
         data = data.replace('\r','\\r')
         data = data.replace('\n','\\n')
         self.output = json.loads(data.rstrip('\\n'))
