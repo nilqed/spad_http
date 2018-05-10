@@ -1,5 +1,8 @@
 (in-package :webspad)
 
+;; Tempfile for multiline input -> )read
+(defparameter +SPAD-TMP+ (format nil ".tmp-ispad-~S.input" (random 100000)))
+
 
 (defstruct ws-format
     (algebra  boot::|$algebraFormat|)
@@ -75,6 +78,15 @@
     (if (ws-format-openmath fmt) 
         (progn (setf (ws-out-stream-openmath out) boot::|$openMathOutputStream|) 
            (setf boot::|$openMathOutputStream| (make-string-output-stream))))
+    
+    (setf s (let ((nl (count #\newline s)))
+      (if (> nl 0)
+        (when t (with-open-file
+          (stream +SPAD-TMP+ :direction :output :if-exists :supersede)
+          (format stream s))
+           (setf (webspad-data-multiline? data) t)
+           (format nil ")read ~S )quiet )ifthere" +SPAD-TMP+))
+         s)))
     
     (setf alg (boot::|parseAndEvalToString| s))
  
