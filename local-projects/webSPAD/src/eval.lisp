@@ -17,6 +17,8 @@
 ;; (type-of x) => SB-IMPL::STRING-OUTPUT-STREAM
 
 (defstruct ws-out-stream
+    (stdout   nil)
+    (stderr   nil)
     (algebra  nil)
     (tex      nil)
     (html     nil)
@@ -29,6 +31,8 @@
 
 (defstruct webspad-data
     (input           ""       :type string  )
+    (stdout          ""       :type string  )
+    (stderr          ""       :type string  )
     (multiline?      nil      :type boolean )
     (spad-type       ""       :type string  )
     (algebra         ""       :type string  )
@@ -49,6 +53,11 @@
     (setf out (make-ws-out-stream))
     
     (setf data (make-webspad-data :input s :format-flags fmt))
+    
+    (progn (setf (ws-out-stream-stdout out) boot::*standard-output*) 
+           (setf (ws-out-stream-stderr out) boot::*error-output*) 
+         (setf boot::*standard-output* (make-string-output-stream))
+         (setf boot::*error-output* (make-string-output-stream)))
     
     
     (if (ws-format-tex fmt) 
@@ -76,7 +85,8 @@
            (setf boot::|$texmacsOutputStream| (make-string-output-stream))))
           
     (if (ws-format-openmath fmt) 
-        (progn (setf (ws-out-stream-openmath out) boot::|$openMathOutputStream|) 
+        (progn 
+           (setf (ws-out-stream-openmath out) boot::|$openMathOutputStream|) 
            (setf boot::|$openMathOutputStream| (make-string-output-stream))))
     
     (setf s (let ((nl (count #\newline s)))
@@ -89,8 +99,16 @@
          s)))
     
     (setf alg (boot::|parseAndEvalToString| s))
+    
  
-                
+    (progn (setf (webspad-data-stdout data) 
+                   (get-output-stream-string boot::*standard-output*))
+           (setf (webspad-data-stderr data) 
+                   (get-output-stream-string boot::*error-output*))
+           (setf boot::*standard-output* (ws-out-stream-stdout out))
+           (setf boot::*error-output* (ws-out-stream-stderr out)))
+             
+    
     (if (ws-format-tex fmt) 
         (progn (setf (webspad-data-tex data) 
                    (get-output-stream-string boot::|$texOutputStream|))

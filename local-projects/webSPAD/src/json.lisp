@@ -6,6 +6,8 @@
 (defun encode-json (data)
   (setf flags (webspad-data-format-flags data))
   (format nil "{ \"input\":~S,~
+                 \"stdout\":~S,~
+                 \"stderr\":~S,~
                  \"multiline?\":~S,~
                  \"spad-type\":~S,~
                  \"algebra\":~S,~
@@ -28,6 +30,8 @@
                    \"openmath\":~S~
                    }}"
                    (webspad-data-input data)
+                   (webspad-data-stdout data)
+                   (webspad-data-stderr data)
                    (bool-to-str (webspad-data-multiline? data))
                    (webspad-data-spad-type data)
                    (webspad-data-algebra data)

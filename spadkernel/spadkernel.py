@@ -5,7 +5,6 @@
 # http://jupyter-client.readthedocs.io/en/stable/wrapperkernels.html
 
 from ipykernel.kernelbase import Kernel
-#from subprocess import Popen
 import spadkernel.spadtex
 import requests
 import json
@@ -44,7 +43,7 @@ class SPAD(Kernel):
     language = 'SPAD'
     language_version = '0.1'
     language_info = {'name': 'SPAD', 'mimetype': 'text/plain',
-                     'file_extension': '.spad',}
+                     'file_extension': '.input',}
     banner = "SPAD kernel - FriCAS, [Open]Axiom"
     
     
@@ -61,7 +60,8 @@ class SPAD(Kernel):
             pyeval = {'name': 'stdout', 'text': self.output}
             self.send_response(self.iopub_socket, 'stream', pyeval)
             return
-            
+        if code.startswith(")shutdown"):
+            self.do_shutdown(False)
             
 
         # send code to hunchentoot and get response
@@ -82,17 +82,30 @@ class SPAD(Kernel):
             
             
         charybdis = self.server.output['charybdis']
-        tex = self.server.output['tex']
+        standard_output = self.server.output['stdout']
+        #tex = self.server.output['tex']
         spadtype = self.server.output['spad-type'] 
         #data = {'text/latex':tex}
         #data = {'text/plain':charybdis}
 
         if not silent:
-            stdout = {'name': 'stdout', 'text': charybdis}
-            self.send_response(self.iopub_socket, 'stream', stdout)
-            # Error handling (red)
-            #stderr = {'name': 'stderr', 'text': charybdis}
-            #self.send_response(self.iopub_socket, 'stream', stderr)
+            if ff['algebra'] == 'true':
+                if charybdis <> "":
+                    stdout = {'name': 'stdout', 'text': charybdis}
+                else:
+                    stdout = {'name': 'stdout', 'text': standard_output}
+                self.send_response(self.iopub_socket, 'stream', stdout)
+            else:
+                if standard_output <> "":
+                    stdout = {'name': 'stdout', 'text': standard_output}
+                    self.send_response(self.iopub_socket, 'stream', stdout)
+                
+            # Error handling (red)    
+            if charybdis.startswith("error"):
+                stderr = {'name': 'stderr', 'text': standard_output}
+                self.send_response(self.iopub_socket, 'stream', stderr)
+            
+            # Display LaTeX, HTML, MathML ...
             display_data = {'data':data, 'metadata':{}}
             self.send_response(self.iopub_socket, 'display_data', display_data)
 
@@ -103,6 +116,41 @@ class SPAD(Kernel):
                 'payload': [],
                 'user_expressions': {},
                }
+
+    def do_complete(self, code, cursor_pos):
+        code = code[:cursor_pos]
+        default = {'matches': [], 'cursor_start': 0,
+                   'cursor_end': cursor_pos, 'metadata': dict(),
+                   'status': 'ok'}
+
+        if not code or code[-1] == ' ':
+            return default
+
+        tokens = code.replace(';', ' ').split()
+        if not tokens:
+            return default
+
+        token = tokens[-1]
+        start = cursor_pos - len(token)  
+
+        matches = ['integrate','integer','limit','solve']
+        
+        if not matches:
+            return default
+        matches = [m for m in matches if m.startswith(token)]
+
+        return {'matches': matches, 'cursor_start': start,
+                'cursor_end': cursor_pos, 'metadata': dict(),'status': 'ok'}
+                
+
+    def do_shutdown(self, restart):
+        "Changes in 5.0: <data> replaced by <text>"
+        output = "-- Bye. Kernel shutdown "
+        stream_content = {'name': 'stdout', 'text': output}
+        self.send_response(self.iopub_socket, 'stream', stream_content)
+        #self.app.stop()
+        return {'restart': restart}
+        
 
 if __name__ == '__main__':
     from ipykernel.kernelapp import IPKernelApp
@@ -122,4 +170,30 @@ if __name__ == '__main__':
 # Finally, you can run your kernel using 
 #  jupyter console --kernel SPAD. 
 # 
+
+# ===================
+# SPAD -> JSON Output 
+# ===================
+#
+#  { "input":"D(x^n,x,4)",
+#    "multiline?":"false",
+#    "spad-type":"",
+#    "algebra":"",
+#    "charybdis":"",
+#    "tex":"",
+#    "html":"",
+#    "mathml":"",
+#    "formula":"",
+#    "fortran":"",
+#    "texmacs":"",
+#    "openmath":"",
+#    "format-flags": 
+#        {"algebra":"true",
+#         "tex":"false",
+#         "html":"false",
+#         "mathml":"false",
+#         "formula":"false",
+#         "fortran":"false",
+#         "texmcas":"false",
+#         "openmath":"false"}}
 
