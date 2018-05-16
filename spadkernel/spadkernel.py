@@ -6,6 +6,7 @@
 
 from ipykernel.kernelbase import Kernel
 import spadkernel.spadtex
+import spadkernel.spadcmd
 import requests
 import json
 import os
@@ -50,6 +51,7 @@ class SPAD(Kernel):
     def __init__(self, **kwargs):
         Kernel.__init__(self, **kwargs)
         self.server = httpSPAD()
+        self.spadcmds = spadkernel.spadcmd.spad_commands
 
 
     def do_execute(self, code, silent, store_history=True, 
@@ -132,12 +134,8 @@ class SPAD(Kernel):
 
         token = tokens[-1]
         start = cursor_pos - len(token)  
-
-        matches = ['integrate','integer','limit','solve']
         
-        if not matches:
-            return default
-        matches = [m for m in matches if m.startswith(token)]
+        matches = [m for m in self.spadcmds if m.startswith(token)]
 
         return {'matches': matches, 'cursor_start': start,
                 'cursor_end': cursor_pos, 'metadata': dict(),'status': 'ok'}
