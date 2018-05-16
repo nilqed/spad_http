@@ -12,8 +12,15 @@ This is the alpha version of a new Jupyter kernel for FriCAS, Axiom ... where "a
 
 Required 
 - FriCAS (in path: fricas), compiled with multi-threaded Lisp (e.g. SBCL)
-- Python/Jupyter 
+- Python/Jupyter
+- Python modules: json, requests  (pip install ...) 
 - bash (for start.sh)
+
+Status
+- Text (charybdis) and LaTeX working
+- Code completion 
+- stdout/stderr -> Notebook
+- todo: timing (set message time on) , plotting, inspection
 
 Tested with
 - Value = "FriCAS 1.3.3 compiled at Don Apr 12 19:26:08 CEST 2018"
