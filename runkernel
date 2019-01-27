@@ -1,0 +1,10 @@
+#!/bin/bash
+echo "app_path:$1"
+echo "connection_file:$2"
+cd $1
+python -m spadkernel2 -f $2 &
+cd ..
+fricas -eval ")r start" 
+jupyter notebook stop 8888
+exit
+
