@@ -1,7 +1,7 @@
-# spad_http : Jupyter kernel for SPAD 
+# spad_http : Jupyter kernel for SPAD ( :construction:) 
 
 
-This is a beta version of a new Jupyter kernel for FriCAS, Axiom ...
+This is a beta version of a new Jupyter kernel for FriCAS, Axiom ... (release :soon:)
 
 
 1. `git clone https://github.com/nilqed/spad_http.git`
